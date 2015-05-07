@@ -45,13 +45,13 @@ namespace ImageProcessingTest02
 
         private static BenriImage ReadImage(string filePath)
         {
-            BenriImage bi;
+            BenriImage image;
             using (var bitmap = new Bitmap(filePath))
             {
-                bi = new BenriImage((Bitmap)bitmap.Clone(), filePath);
+                image = new BenriImage((Bitmap)bitmap.Clone(), filePath);
             }
 
-            return bi;
+            return image;
         }
 
         private static void SaveImage(ref BenriImage image, string filePath = null)
