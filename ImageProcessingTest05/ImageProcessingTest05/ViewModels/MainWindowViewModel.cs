@@ -16,6 +16,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Media.Imaging;
 using System.IO;
+using System.Windows.Threading;
 
 namespace ImageProcessingTest05.ViewModels
 {
@@ -81,6 +82,7 @@ namespace ImageProcessingTest05.ViewModels
         private void UpdateBitmap(object sender, PropertyChangedEventArgs e)
         {
             var model = sender as Model;
+
             using (var ms = new MemoryStream())
             {
                 model.OriginalBitmap.Save(ms, ImageFormat.Bmp);
@@ -89,7 +91,7 @@ namespace ImageProcessingTest05.ViewModels
             }
             using (var ms = new MemoryStream())
             {
-                model.OriginalBitmap.Save(ms, ImageFormat.Bmp);
+                model.GrayScaleBitmap.Save(ms, ImageFormat.Bmp);
                 ms.Seek(0, 0);
                 GrayScaleBitmap = BitmapFrame.Create(ms, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
             }
@@ -105,9 +107,75 @@ namespace ImageProcessingTest05.ViewModels
                 ms.Seek(0, 0);
                 EdgeBitmap = BitmapFrame.Create(ms, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
             }
+            FreezeBitmap();
+
+            DispatcherHelper.UIDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => SetBigBitmap()));
         }
 
-        
+        private void FreezeBitmap()
+        {
+            OriginalBitmap.Freeze();
+            GrayScaleBitmap.Freeze();
+            BlurBitmap.Freeze();
+            EdgeBitmap.Freeze();
+        }
+
+        private void SetBigBitmap()
+        {
+            switch (BigBitmapId)
+            {
+                case 1:
+                    BigBitmap = GrayScaleBitmap;
+                    break;
+                case 2:
+                    BigBitmap = BlurBitmap;
+                    break;
+                case 3:
+                    BigBitmap = EdgeBitmap;
+                    break;
+                default:
+                    BigBitmap = OriginalBitmap;
+                    break;
+            }
+        }
+
+        #region ChangeBitmapCommand
+        private ListenerCommand<string> _ChangeBitmapCommand;
+
+        public ListenerCommand<string> ChangeBitmapCommand
+        {
+            get
+            {
+                if (_ChangeBitmapCommand == null)
+                {
+                    _ChangeBitmapCommand = new ListenerCommand<string>(ChangeBitmap);
+                }
+                return _ChangeBitmapCommand;
+            }
+        }
+
+        public void ChangeBitmap(string parameter)
+        {
+            BigBitmapId = int.Parse(parameter);
+        }
+        #endregion ChangeBitmapCommand
+
+        #region BigBitmapId変更通知プロパティ
+        private int _BigBitmapId;
+
+        public int BigBitmapId
+        {
+            get
+            { return _BigBitmapId; }
+            set
+            { 
+                if (_BigBitmapId == value)
+                    return;
+                _BigBitmapId = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion BigBitmapId変更通知プロパティ
 
         #region BigBitmap変更通知プロパティ
         private BitmapFrame _BigBitmap;

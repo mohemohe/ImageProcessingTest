@@ -70,7 +70,6 @@ namespace ImageProcessingTest05.Models
                     var movImage = CreateImage();
                     Ffmpeg.Write(ref movImage);
 
-
                     RaisePropertyChanged();
                 }
                 Thread.Sleep(1);

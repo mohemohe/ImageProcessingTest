@@ -6,7 +6,7 @@
         xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:v="clr-namespace:ImageProcessingTest05.Views"
         xmlns:vm="clr-namespace:ImageProcessingTest05.ViewModels"
-        Title="ImageProcessingTest05" SizeToContent="WidthAndHeight" >
+        Title="ImageProcessingTest05" Width="1280" Height="720" MinWidth="1280" MinHeight="720" >
     
     <Window.DataContext>
         <vm:MainWindowViewModel/>
@@ -32,19 +32,28 @@
 
     </i:Interaction.Triggers>
     
-    <Grid MinHeight="720" MinWidth="1280">
+    <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="320"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
-            <Image Source="{Binding OriginalBitmap}"/>
+            <Image Source="{Binding BigBitmap}"/>
         </Grid>
         <Grid Grid.Row="1">
             <StackPanel Orientation="Horizontal">
-                <Image Source="{Binding GrayScaleBitmap}"/>
-                <Image Source="{Binding BlurBitmap}"/>
-                <Image Source="{Binding EdgeBitmap}"/>
+                <Button Command="{Binding ChangeBitmapCommand}" CommandParameter="0">
+                    <Image Source="{Binding OriginalBitmap}"/>
+                </Button>
+                <Button Command="{Binding ChangeBitmapCommand}" CommandParameter="1">
+                    <Image Source="{Binding GrayScaleBitmap}"/>
+                </Button>
+                <Button Command="{Binding ChangeBitmapCommand}" CommandParameter="2">
+                    <Image Source="{Binding BlurBitmap}"/>
+                </Button>
+                <Button Command="{Binding ChangeBitmapCommand}" CommandParameter="3">
+                    <Image Source="{Binding EdgeBitmap}"/>
+                </Button>
             </StackPanel>
         </Grid>
     </Grid>
