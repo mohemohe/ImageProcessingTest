@@ -20,7 +20,7 @@ namespace ImageProcessingTest05.Models
         {
             info = new ProcessStartInfo();
             info.FileName = "ffmpeg.exe";
-            info.Arguments = "-f image2pipe -i pipe:.bmp -pix_fmt yuv420p -c:v libx264 -r 30 -bufsize 30000k -b:v 2600k -y Capturedtest.mp4";
+            info.Arguments = "-f image2pipe -i pipe:.bmp -pix_fmt yuv420p -c:v libx264 -r 30 -bufsize 30000k -b:v 1500k -y capture.mp4";
             info.CreateNoWindow = true;
             info.RedirectStandardInput = true;
             info.RedirectStandardOutput = true;

@@ -1,4 +1,5 @@
-﻿using OpenCvSharp.CPlusPlus;
+﻿using OpenCvSharp;
+using OpenCvSharp.CPlusPlus;
 using OpenCvSharp.Extensions;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,17 @@ namespace ImageProcessingTest05.Models
             get
             {
                 return BitmapConverter.ToMat(Bitmap);
+            }
+            set
+            {
+                Bitmap = BitmapConverter.ToBitmap(value);
+            }
+        }
+        public IplImage IplImage
+        {
+            get
+            {
+                return BitmapConverter.ToIplImage(Bitmap);
             }
             set
             {
@@ -49,6 +61,14 @@ namespace ImageProcessingTest05.Models
         public BenriImage(Mat matrix)
         {
             Mat = matrix;
+            Format = ImageFormat.Bmp;
+            Width = Bitmap.Width;
+            Height = Bitmap.Height;
+        }
+
+        public BenriImage(IplImage iplImage)
+        {
+            IplImage = iplImage;
             Format = ImageFormat.Bmp;
             Width = Bitmap.Width;
             Height = Bitmap.Height;

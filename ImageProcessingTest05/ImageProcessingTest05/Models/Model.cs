@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
+using OpenCvSharp.Extensions;
 
 namespace ImageProcessingTest05.Models
 {
@@ -20,30 +21,46 @@ namespace ImageProcessingTest05.Models
          * NotificationObjectはプロパティ変更通知の仕組みを実装したオブジェクトです。
          */
 
-        VideoCapture source;
+        System.Timers.Timer framerateTick;
+        CvCapture source;
         public Bitmap OriginalBitmap;
         public Bitmap GrayScaleBitmap;
         public Bitmap BlurBitmap;
         public Bitmap EdgeBitmap;
+        public Bitmap CaptureBitmap;
 
-        public async void Initialize()
+        public void Initialize()
         {
             Ffmpeg.Start();
             try
             {
-                source = new VideoCapture(0);
-                source.Open(0);
-                await Task.Run(() => StartProcessing());
+                source = Cv.CreateCameraCapture(0);
+                Cv.SetCaptureProperty(source, CaptureProperty.FrameWidth, 1280);
+                Cv.SetCaptureProperty(source, CaptureProperty.FrameHeight, 960);
+                Task.Factory.StartNew(() => StartProcessing());
             }
             catch { }
+            framerateTick = new System.Timers.Timer();
+            framerateTick.Interval = 1000 / 30;
+            framerateTick.Elapsed += framerateTick_Elapsed;
+            framerateTick.Start();
+        }
+
+        void framerateTick_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (CaptureBitmap != null)
+            {
+                Ffmpeg.Write(ref CaptureBitmap);
+            }
         }
 
         public void Dispose()
         {
+            framerateTick.Close();
             Ffmpeg.Close();
             if (source != null)
             {
-                source.Release();
+                //source.Release();
                 source.Dispose();
             }
         }
@@ -67,8 +84,7 @@ namespace ImageProcessingTest05.Models
                     EdgeExtraction(ref image);
                     EdgeBitmap = (Bitmap)image.Bitmap.Clone();
 
-                    var movImage = CreateImage();
-                    Ffmpeg.Write(ref movImage);
+                    CaptureBitmap = CreateImage();
 
                     RaisePropertyChanged();
                 }
@@ -99,14 +115,17 @@ namespace ImageProcessingTest05.Models
 
         private bool GetWebcamImage()
         {
-            var mat = new Mat();
-
-            source.Read(mat);
-            var updated = !mat.Empty();
-            if (updated)
+            var updated = false;
+            var frame = source.RetrieveFrame();
+            if (frame != null)
             {
-                var image = new BenriImage(mat);
-                OriginalBitmap = (Bitmap)image.Bitmap.Clone();
+                var image = new BenriImage(frame);
+                updated = !image.Mat.Empty();
+                if (updated)
+                {
+                    // var image = new BenriImage(mat);
+                    OriginalBitmap = (Bitmap)image.Bitmap.Clone();
+                }
             }
 
             return updated;

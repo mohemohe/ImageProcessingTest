@@ -17,6 +17,7 @@ using System.Drawing.Imaging;
 using System.Windows.Media.Imaging;
 using System.IO;
 using System.Windows.Threading;
+using System.Windows;
 
 namespace ImageProcessingTest05.ViewModels
 {
@@ -71,6 +72,8 @@ namespace ImageProcessingTest05.ViewModels
             _model = new Model();
             var listener = new PropertyChangedEventListener(_model, (sender, e) => UpdateBitmap(sender, e));
             _model.Initialize();
+
+            Application.Current.MainWindow.StateChanged += MainWindow_StateChanged;
         }
 
         public new void Dispose()
@@ -78,6 +81,21 @@ namespace ImageProcessingTest05.ViewModels
             _model.Dispose();
             base.Dispose();
         }
+
+        void MainWindow_StateChanged(object sender, EventArgs e)
+        {
+            var window = sender as Window;
+            if (window.WindowState == WindowState.Normal)
+            {
+                WindowMargin = 0;
+            }
+            else
+            {
+                WindowMargin = System.Windows.Forms.SystemInformation.FrameBorderSize.Width
+                             + System.Windows.Forms.SystemInformation.FrameBorderSize.Height;
+            }
+        }
+
 
         private void UpdateBitmap(object sender, PropertyChangedEventArgs e)
         {
@@ -107,17 +125,8 @@ namespace ImageProcessingTest05.ViewModels
                 ms.Seek(0, 0);
                 EdgeBitmap = BitmapFrame.Create(ms, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
             }
-            FreezeBitmap();
-
+            
             DispatcherHelper.UIDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => SetBigBitmap()));
-        }
-
-        private void FreezeBitmap()
-        {
-            OriginalBitmap.Freeze();
-            GrayScaleBitmap.Freeze();
-            BlurBitmap.Freeze();
-            EdgeBitmap.Freeze();
         }
 
         private void SetBigBitmap()
@@ -261,6 +270,23 @@ namespace ImageProcessingTest05.ViewModels
             }
         }
         #endregion EdgeBitmap変更通知プロパティ
+
+        #region WindowMargin変更通知プロパティ
+        private int _WindowMargin;
+
+        public int WindowMargin
+        {
+            get
+            { return _WindowMargin; }
+            set
+            { 
+                if (_WindowMargin == value)
+                    return;
+                _WindowMargin = value;
+                RaisePropertyChanged();
+            }
+        }
+        #endregion WindowMargin変更通知プロパティ
 
     }
 }
