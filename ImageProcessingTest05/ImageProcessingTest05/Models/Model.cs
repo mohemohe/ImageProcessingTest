@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
+using System.Windows.Threading;
 using OpenCvSharp.Extensions;
 
 namespace ImageProcessingTest05.Models
@@ -35,13 +36,16 @@ namespace ImageProcessingTest05.Models
             try
             {
                 source = Cv.CreateCameraCapture(0);
-                Cv.SetCaptureProperty(source, CaptureProperty.FrameWidth, 1280);
-                Cv.SetCaptureProperty(source, CaptureProperty.FrameHeight, 960);
+                Cv.SetCaptureProperty(source, CaptureProperty.FrameWidth, 2048);
+                Cv.SetCaptureProperty(source, CaptureProperty.FrameHeight, 1536);
+                Cv.SetCaptureProperty(source, CaptureProperty.AutoExposure, 0);
+                Cv.SetCaptureProperty(source, CaptureProperty.Gain, 32.0);
+                Cv.SetCaptureProperty(source, CaptureProperty.Exposure, -6);
                 Task.Factory.StartNew(() => StartProcessing());
             }
             catch { }
             framerateTick = new System.Timers.Timer();
-            framerateTick.Interval = 1000 / 30;
+            framerateTick.Interval = 1000.0 / 30.0;
             framerateTick.Elapsed += framerateTick_Elapsed;
             framerateTick.Start();
         }
@@ -50,7 +54,9 @@ namespace ImageProcessingTest05.Models
         {
             if (CaptureBitmap != null)
             {
-                Ffmpeg.Write(ref CaptureBitmap);
+                DispatcherHelper.UIDispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle,
+                    new Action(() => Ffmpeg.Write(CaptureBitmap)));
+
             }
         }
 

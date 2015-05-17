@@ -81,16 +81,16 @@
             </Grid>
             <Grid Grid.Row="1" HorizontalAlignment="Center">
                 <StackPanel Orientation="Horizontal">
-                    <Button Command="{Binding ChangeBitmapCommand}" CommandParameter="0">
+                    <Button Command="{Binding ChangeBitmapCommand}" CommandParameter="0" Template="{DynamicResource Button}">
                         <Image Source="{Binding OriginalBitmap}" RenderOptions.BitmapScalingMode="Fant"/>
                     </Button>
-                    <Button Command="{Binding ChangeBitmapCommand}" CommandParameter="1">
+                    <Button Command="{Binding ChangeBitmapCommand}" CommandParameter="1" Template="{DynamicResource Button}">
                         <Image Source="{Binding GrayScaleBitmap}" RenderOptions.BitmapScalingMode="Fant"/>
                     </Button>
-                    <Button Command="{Binding ChangeBitmapCommand}" CommandParameter="2">
+                    <Button Command="{Binding ChangeBitmapCommand}" CommandParameter="2" Template="{DynamicResource Button}">
                         <Image Source="{Binding BlurBitmap}" RenderOptions.BitmapScalingMode="Fant"/>
                     </Button>
-                    <Button Command="{Binding ChangeBitmapCommand}" CommandParameter="3">
+                    <Button Command="{Binding ChangeBitmapCommand}" CommandParameter="3" Template="{DynamicResource Button}">
                         <Image Source="{Binding EdgeBitmap}" RenderOptions.BitmapScalingMode="Fant"/>
                     </Button>
                 </StackPanel>

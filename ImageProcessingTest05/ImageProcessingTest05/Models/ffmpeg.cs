@@ -19,8 +19,8 @@ namespace ImageProcessingTest05.Models
         public static void Start()
         {
             info = new ProcessStartInfo();
-            info.FileName = "ffmpeg.exe";
-            info.Arguments = "-f image2pipe -i pipe:.bmp -pix_fmt yuv420p -c:v libx264 -r 30 -bufsize 30000k -b:v 1500k -y capture.mp4";
+            info.FileName = @"ffmpeg.exe";
+            info.Arguments = @"-f image2pipe -i pipe:.bmp -pix_fmt yuv420p -vcodec libx264 -crf 32 -preset fast -framerate 30 -bufsize 30000k -y capture.mp4";
             info.CreateNoWindow = true;
             info.RedirectStandardInput = true;
             info.RedirectStandardOutput = true;
@@ -32,7 +32,7 @@ namespace ImageProcessingTest05.Models
             ffm.Start();
         }
 
-        public static void Write(ref Bitmap image)
+        public static void Write(Bitmap image)
         {
             image.Save(ffm.StandardInput.BaseStream, ImageFormat.Bmp);
         }

@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessingTest05", "ImageProcessingTest05\ImageProcessingTest05.csproj", "{957CDF78-3D16-41AF-A9FF-26DF72FCD412}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebcamRT", "WebcamRT\WebcamRT.csproj", "{0FC61C01-2B5A-4CAB-A2C1-96B2E5D4D747}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,14 @@ Global
 		{957CDF78-3D16-41AF-A9FF-26DF72FCD412}.Release|x64.Build.0 = Release|x64
 		{957CDF78-3D16-41AF-A9FF-26DF72FCD412}.Release|x86.ActiveCfg = Release|x86
 		{957CDF78-3D16-41AF-A9FF-26DF72FCD412}.Release|x86.Build.0 = Release|x86
+		{0FC61C01-2B5A-4CAB-A2C1-96B2E5D4D747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FC61C01-2B5A-4CAB-A2C1-96B2E5D4D747}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FC61C01-2B5A-4CAB-A2C1-96B2E5D4D747}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0FC61C01-2B5A-4CAB-A2C1-96B2E5D4D747}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0FC61C01-2B5A-4CAB-A2C1-96B2E5D4D747}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FC61C01-2B5A-4CAB-A2C1-96B2E5D4D747}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FC61C01-2B5A-4CAB-A2C1-96B2E5D4D747}.Release|x64.ActiveCfg = Release|Any CPU
+		{0FC61C01-2B5A-4CAB-A2C1-96B2E5D4D747}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
