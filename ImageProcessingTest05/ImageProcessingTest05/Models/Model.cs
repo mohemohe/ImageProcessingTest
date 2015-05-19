@@ -13,6 +13,7 @@ using System.IO;
 using System.Threading;
 using System.Windows.Threading;
 using OpenCvSharp.Extensions;
+using WebcamRT;
 
 namespace ImageProcessingTest05.Models
 {
@@ -23,24 +24,22 @@ namespace ImageProcessingTest05.Models
          */
 
         System.Timers.Timer framerateTick;
-        CvCapture source;
+        private Webcam webcam;
         public Bitmap OriginalBitmap;
         public Bitmap GrayScaleBitmap;
         public Bitmap BlurBitmap;
         public Bitmap EdgeBitmap;
         public Bitmap CaptureBitmap;
 
-        public void Initialize()
+        public async void Initialize()
         {
             Ffmpeg.Start();
+            
+            webcam = new Webcam();
+            await webcam.Initialize(webcam.Devices[0].Id);
+
             try
             {
-                source = Cv.CreateCameraCapture(0);
-                Cv.SetCaptureProperty(source, CaptureProperty.FrameWidth, 2048);
-                Cv.SetCaptureProperty(source, CaptureProperty.FrameHeight, 1536);
-                Cv.SetCaptureProperty(source, CaptureProperty.AutoExposure, 0);
-                Cv.SetCaptureProperty(source, CaptureProperty.Gain, 32.0);
-                Cv.SetCaptureProperty(source, CaptureProperty.Exposure, -6);
                 Task.Factory.StartNew(() => StartProcessing());
             }
             catch { }
@@ -64,19 +63,14 @@ namespace ImageProcessingTest05.Models
         {
             framerateTick.Close();
             Ffmpeg.Close();
-            if (source != null)
-            {
-                //source.Release();
-                source.Dispose();
-            }
         }
 
-        public void StartProcessing()
+        public async void StartProcessing()
         {
             while (true)
             {
                 BenriImage image;
-                if (GetWebcamImage())
+                if (await GetWebcamImage())
                 {
                     image = new BenriImage(OriginalBitmap);
                     GrayScale(ref image);
@@ -119,10 +113,10 @@ namespace ImageProcessingTest05.Models
             image.Mat = result;
         }
 
-        private bool GetWebcamImage()
+        private async Task<bool> GetWebcamImage()
         {
             var updated = false;
-            var frame = source.RetrieveFrame();
+            var frame = await webcam.GetBitmap();
             if (frame != null)
             {
                 var image = new BenriImage(frame);
