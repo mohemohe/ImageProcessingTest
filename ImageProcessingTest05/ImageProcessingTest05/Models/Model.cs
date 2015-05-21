@@ -31,12 +31,12 @@ namespace ImageProcessingTest05.Models
         public Bitmap EdgeBitmap;
         public Bitmap CaptureBitmap;
 
-        public async void Initialize()
+        public void Initialize()
         {
             Ffmpeg.Start();
             
             webcam = new Webcam();
-            await webcam.Initialize(webcam.Devices[0].Id);
+            webcam.Initialize(webcam.Devices[0].Id);
 
             try
             {
@@ -84,11 +84,11 @@ namespace ImageProcessingTest05.Models
                     EdgeExtraction(ref image);
                     EdgeBitmap = (Bitmap)image.Bitmap.Clone();
 
-                    CaptureBitmap = CreateImage();
+                    //CaptureBitmap = CreateImage();
 
                     RaisePropertyChanged();
                 }
-                Thread.Sleep(1);
+                //Thread.Sleep(1);
             }
         }
 

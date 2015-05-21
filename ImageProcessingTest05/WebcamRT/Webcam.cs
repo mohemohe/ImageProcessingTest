@@ -51,7 +51,8 @@ namespace WebcamRT
 
             if (os.Platform == PlatformID.Win32NT)
             {
-                if (os.Version.Major >= 6 && os.Version.Minor >= 2)
+                //TODO: ちゃんとOSバージョンが帰ってくるようにする
+                if (os.Version.Major >= 6 && os.Version.Minor >= 3)
                 {
                     return true;
                 }
@@ -59,7 +60,7 @@ namespace WebcamRT
             return false;
         }
 
-        private async void GetDeviceList()
+        private void GetDeviceList()
         {
             var task = Task.Factory.StartNew(() =>
             {
@@ -71,7 +72,7 @@ namespace WebcamRT
             task.Wait();
         } 
 
-        public async Task<bool> Initialize(string videoDeviceId, string audioDeviceId = null)
+        public bool Initialize(string videoDeviceId, string audioDeviceId = null)
         {
             var settings = new MediaCaptureInitializationSettings();
             settings.VideoDeviceId = videoDeviceId;
@@ -81,9 +82,10 @@ namespace WebcamRT
             }
 
             try
-            {
-                await _capture.InitializeAsync(settings);
+            { 
+                _capture.InitializeAsync(settings).AsTask().Wait();
                 _initialized = true;
+
                 return true;
             }
             catch
@@ -99,16 +101,16 @@ namespace WebcamRT
                 throw new DeviceNotInitializedException();
             }
 
-            Stream stream;
+            MemoryStream stream = new MemoryStream();
             using (var ras = new InMemoryRandomAccessStream())
             {
+                //MEMO: LowLagPhotoCapture なるものがあるらしい　https://msdn.microsoft.com/library/windows/apps/dn278811
                 await _capture.CapturePhotoToStreamAsync(ImageEncodingProperties.CreatePng(), ras);
                 ras.Seek(0);
-
-                stream = ras.AsStream();
+                ras.AsStream().CopyTo(stream);
             }
             var bitmap = new Bitmap(stream);
-
+            
             return bitmap;
         }
     }
