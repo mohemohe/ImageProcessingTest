@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Management;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -47,17 +48,20 @@ namespace WebcamRT
 
         private bool IsSupportedOS()
         {
-            var os = Environment.OSVersion;
-
-            if (os.Platform == PlatformID.Win32NT)
+            var result = false;
+            using (var mc = new ManagementClass("Win32_OperatingSystem"))
+            using (var moc = mc.GetInstances())
             {
-                //TODO: ちゃんとOSバージョンが帰ってくるようにする
-                if (os.Version.Major >= 6 && os.Version.Minor >= 3)
+                foreach (var mo in moc)
                 {
-                    return true;
+                    var ver = mo["Version"].ToString().Split('.');
+                    if (int.Parse(ver[0]) >= 6 && int.Parse(ver[1]) >= 3)
+                    {
+                        result = true;
+                    }
                 }
             }
-            return false;
+            return result;
         }
 
         private void GetDeviceList()
@@ -101,15 +105,14 @@ namespace WebcamRT
                 throw new DeviceNotInitializedException();
             }
 
-            MemoryStream stream = new MemoryStream();
+            Bitmap bitmap;
             using (var ras = new InMemoryRandomAccessStream())
             {
                 //MEMO: LowLagPhotoCapture なるものがあるらしい　https://msdn.microsoft.com/library/windows/apps/dn278811
                 await _capture.CapturePhotoToStreamAsync(ImageEncodingProperties.CreatePng(), ras);
                 ras.Seek(0);
-                ras.AsStream().CopyTo(stream);
+                bitmap = new Bitmap(ras.AsStream());
             }
-            var bitmap = new Bitmap(stream);
             
             return bitmap;
         }

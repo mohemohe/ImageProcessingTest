@@ -18,7 +18,7 @@ namespace ImageProcessingTest05.Models
         {
             get
             {
-                return BitmapConverter.ToMat(Bitmap);
+                return BitmapConverter.ToMat(new Bitmap(Bitmap));
             }
             set
             {
@@ -29,7 +29,7 @@ namespace ImageProcessingTest05.Models
         {
             get
             {
-                return BitmapConverter.ToIplImage(Bitmap);
+                return BitmapConverter.ToIplImage(new Bitmap(Bitmap));
             }
             set
             {

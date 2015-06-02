@@ -40,7 +40,9 @@ namespace ImageProcessingTest05.Models
 
             try
             {
+#pragma warning disable 4014
                 Task.Factory.StartNew(() => StartProcessing());
+#pragma warning restore 4014
             }
             catch { }
             framerateTick = new System.Timers.Timer();
